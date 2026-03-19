@@ -1,32 +1,31 @@
-import { getWorkouts } from "./storage.js"
+import { getWorkouts } from "./storage.js";
 
 export function displayWorkoutHistory() {
-  const historyList = document.getElementById("historyList")
+  const container = document.querySelector("#historyList");
+  if (!container) return;
 
-  if (!historyList) return
-
-  const workouts = getWorkouts()
+  const workouts = getWorkouts();
 
   if (workouts.length === 0) {
-    historyList.innerHTML = "<p>No workouts logged yet.</p>"
-    return
+    container.innerHTML = "<p>No workouts logged yet.</p>";
+    return;
   }
 
-  historyList.innerHTML = ""
+  const sortedWorkouts = [...workouts].sort(
+    (a, b) => new Date(b.date) - new Date(a.date)
+  );
 
-  workouts.forEach((workout) => {
-    const workoutCard = document.createElement("article")
-    workoutCard.classList.add("workout-card")
-
-    workoutCard.innerHTML = `
-      <h3>${workout.type}</h3>
-      <p><strong>Date:</strong> ${workout.date}</p>
-      <p><strong>Exercise:</strong> ${workout.exercise}</p>
-      <p><strong>Sets:</strong> ${workout.sets}</p>
-      <p><strong>Reps:</strong> ${workout.reps}</p>
-      <p><strong>Notes:</strong> ${workout.notes}</p>
-    `
-
-    historyList.appendChild(workoutCard)
-  })
+  container.innerHTML = sortedWorkouts
+    .map(
+      (workout) => `
+        <div class="workout-card">
+          <h3>${workout.type} - ${workout.exercise}</h3>
+          <p><strong>Date:</strong> ${workout.date}</p>
+          <p><strong>Sets:</strong> ${workout.sets ?? "-"}</p>
+          <p><strong>Reps / Seconds:</strong> ${workout.reps ?? "-"}</p>
+          <p><strong>Notes:</strong> ${workout.notes || "-"}</p>
+        </div>
+      `
+    )
+    .join("");
 }

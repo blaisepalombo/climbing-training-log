@@ -11,7 +11,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
-
 <header>
   <nav>
     <h1>Climbing Training Log</h1>
@@ -28,33 +27,43 @@
   <h2>Log Training Session</h2>
 
   <form id="workoutForm">
+    <p id="formMessage" class="form-message" aria-live="polite"></p>
+    <p id="apiMessage" class="form-message" aria-live="polite"></p>
 
     <label for="date">Date</label>
     <input type="date" id="date" name="date" required>
 
     <label for="type">Workout Type</label>
-    <select id="type" name="type">
-      <option>Hangboard</option>
-      <option>Strength</option>
-      <option>Conditioning</option>
+    <select id="type" name="type" required>
+      <option value="Hangboard">Hangboard</option>
+      <option value="Strength">Strength</option>
+      <option value="Conditioning">Conditioning</option>
     </select>
 
     <label for="exercise">Exercise</label>
-    <input type="text" id="exercise" name="exercise" placeholder="Pull ups, finger curls, etc">
+    <select id="exercise" name="exercise" required>
+      <option value="">Loading exercises...</option>
+    </select>
+
+    <label for="customExercise">Custom Exercise (optional)</label>
+    <input
+      type="text"
+      id="customExercise"
+      name="customExercise"
+      placeholder="Use this if your exercise is not listed"
+    >
 
     <label for="sets">Sets</label>
-    <input type="number" id="sets" name="sets">
+    <input type="number" id="sets" name="sets" min="0">
 
-    <label for="reps">Reps</label>
-    <input type="number" id="reps" name="reps">
+    <label for="reps">Reps / Seconds</label>
+    <input type="number" id="reps" name="reps" min="0">
 
     <label for="notes">Notes</label>
     <textarea id="notes" name="notes"></textarea>
 
     <button type="submit">Save Workout</button>
-
   </form>
 </main>
-
 </body>
 </html>

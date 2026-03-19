@@ -1,11 +1,33 @@
-import { initWorkoutForm } from "./formHandler.js"
-import { displayWorkoutHistory } from "./history.js"
-import { displayDashboard } from "./dashboard.js"
-import { displayProgress } from "./progress.js"
+document.addEventListener("DOMContentLoaded", async () => {
+  if (document.querySelector("#workoutForm")) {
+    const { initWorkoutForm } = await import("./formHandler.js");
+    await initWorkoutForm();
+  }
 
-document.addEventListener("DOMContentLoaded", () => {
-  initWorkoutForm()
-  displayWorkoutHistory()
-  displayDashboard()
-  displayProgress()
-})
+  if (document.querySelector("#historyList")) {
+    try {
+      const { displayWorkoutHistory } = await import("./history.js");
+      displayWorkoutHistory();
+    } catch (error) {
+      console.warn("History module not loaded:", error);
+    }
+  }
+
+  if (document.querySelector("#totalSessions")) {
+    try {
+      const { displayDashboard } = await import("./dashboard.js");
+      displayDashboard();
+    } catch (error) {
+      console.warn("Dashboard module not loaded:", error);
+    }
+  }
+
+  if (document.querySelector("#progressPage")) {
+    try {
+      const { displayProgress } = await import("./progress.js");
+      displayProgress();
+    } catch (error) {
+      console.warn("Progress module not loaded:", error);
+    }
+  }
+});

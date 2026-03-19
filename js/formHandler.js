@@ -1,28 +1,45 @@
-import { saveWorkout } from "./storage.js"
+import { saveWorkout } from "./storage.js";
+import { buildWorkoutFromForm, validateWorkout } from "./trainingLog.js";
+import { populateExerciseOptions } from "./exerciseAPI.js";
+import { formatDateForInput, qs, showMessage } from "./utils.js";
 
-export function initWorkoutForm() {
+export async function initWorkoutForm() {
+  const form = qs("#workoutForm");
+  if (!form) return;
 
-  const form = document.getElementById("workoutForm")
+  const dateInput = qs("#date");
+  const typeSelect = qs("#type");
+  const exerciseSelect = qs("#exercise");
+  const messageBox = qs("#formMessage");
+  const apiMessage = qs("#apiMessage");
 
-  if (!form) return
+  if (dateInput) {
+    dateInput.value = formatDateForInput();
+  }
 
-  form.addEventListener("submit", (e) => {
-    e.preventDefault()
+  await populateExerciseOptions(typeSelect.value, exerciseSelect, apiMessage);
 
-    const workout = {
-      date: document.getElementById("date").value,
-      type: document.getElementById("type").value,
-      exercise: document.getElementById("exercise").value,
-      sets: document.getElementById("sets").value,
-      reps: document.getElementById("reps").value,
-      notes: document.getElementById("notes").value
+  typeSelect.addEventListener("change", async () => {
+    await populateExerciseOptions(typeSelect.value, exerciseSelect, apiMessage);
+  });
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const workout = buildWorkoutFromForm(form);
+    const validation = validateWorkout(workout);
+
+    if (!validation.isValid) {
+      showMessage(messageBox, validation.message, true);
+      return;
     }
 
-    saveWorkout(workout)
+    saveWorkout(workout);
+    form.reset();
 
-    form.reset()
+    dateInput.value = formatDateForInput();
+    await populateExerciseOptions(typeSelect.value, exerciseSelect, apiMessage);
 
-    alert("Workout saved")
-  })
-
+    showMessage(messageBox, "Workout saved successfully.");
+  });
 }

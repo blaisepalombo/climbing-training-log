@@ -1,0 +1,26 @@
+{
+  "Hangboard": [
+    "Max hangs",
+    "Repeaters",
+    "Half crimp hangs",
+    "Open hand hangs",
+    "Three finger drag hangs",
+    "Density hangs"
+  ],
+  "Strength": [
+    "Pull ups",
+    "Weighted pull ups",
+    "Lock offs",
+    "Rows",
+    "Deadlifts",
+    "Finger curls"
+  ],
+  "Conditioning": [
+    "ARC training",
+    "Jump rope",
+    "Bike intervals",
+    "Core circuit",
+    "Shoulder stability",
+    "Mobility session"
+  ]
+}

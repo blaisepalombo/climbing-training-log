@@ -1,36 +1,35 @@
-import { getWorkouts } from "./storage.js"
+import { getWorkouts } from "./storage.js";
 
 export function displayProgress() {
-  const totalWorkouts = document.getElementById("totalWorkouts")
-  const commonWorkout = document.getElementById("commonWorkout")
+  const totalEl = document.querySelector("#totalWorkouts");
+  const commonEl = document.querySelector("#commonWorkout");
 
-  if (!totalWorkouts || !commonWorkout) return
+  if (!totalEl || !commonEl) return;
 
-  const workouts = getWorkouts()
+  const workouts = getWorkouts();
 
-  totalWorkouts.textContent = workouts.length
+  totalEl.textContent = workouts.length;
 
   if (workouts.length === 0) {
-    commonWorkout.textContent = "None yet"
-    return
+    commonEl.textContent = "None yet";
+    return;
   }
 
-  const workoutTypes = {}
+  const workoutCounts = {};
 
   workouts.forEach((workout) => {
-    const type = workout.type
-    workoutTypes[type] = (workoutTypes[type] || 0) + 1
-  })
+    workoutCounts[workout.type] = (workoutCounts[workout.type] || 0) + 1;
+  });
 
-  let mostCommon = ""
-  let highestCount = 0
+  let mostCommonType = "";
+  let highestCount = 0;
 
-  for (const type in workoutTypes) {
-    if (workoutTypes[type] > highestCount) {
-      highestCount = workoutTypes[type]
-      mostCommon = type
+  for (const type in workoutCounts) {
+    if (workoutCounts[type] > highestCount) {
+      highestCount = workoutCounts[type];
+      mostCommonType = type;
     }
   }
 
-  commonWorkout.textContent = mostCommon
+  commonEl.textContent = `${mostCommonType} (${highestCount})`;
 }

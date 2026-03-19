@@ -217,6 +217,20 @@ textarea {
   resize: vertical;
 }
 
+.form-message {
+  margin: 0 0 0.25rem;
+  font-weight: 700;
+  min-height: 1.4rem;
+}
+
+.form-message.success {
+  color: #2f6b45;
+}
+
+.form-message.error {
+  color: #9b2c2c;
+}
+
 /* =========================
    BUTTONS
 ========================= */

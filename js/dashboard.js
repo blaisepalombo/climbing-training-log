@@ -1,21 +1,24 @@
-import { getWorkouts } from "./storage.js"
+import { getWorkouts } from "./storage.js";
 
 export function displayDashboard() {
-  const totalSessions = document.getElementById("totalSessions")
-  const recentWorkout = document.getElementById("recentWorkout")
+  const totalEl = document.querySelector("#totalSessions");
+  const recentEl = document.querySelector("#recentWorkout");
 
-  if (!totalSessions || !recentWorkout) return
+  if (!totalEl || !recentEl) return;
 
-  const workouts = getWorkouts()
+  const workouts = getWorkouts();
 
-  totalSessions.textContent = workouts.length
+  totalEl.textContent = workouts.length;
 
   if (workouts.length === 0) {
-    recentWorkout.textContent = "No workouts logged yet."
-    return
+    recentEl.textContent = "No workouts logged yet.";
+    return;
   }
 
-  const latestWorkout = workouts[workouts.length - 1]
+  const sortedWorkouts = [...workouts].sort(
+    (a, b) => new Date(b.date) - new Date(a.date)
+  );
 
-  recentWorkout.textContent = `${latestWorkout.type} - ${latestWorkout.exercise} on ${latestWorkout.date}`
+  const recentWorkout = sortedWorkouts[0];
+  recentEl.textContent = `${recentWorkout.date} - ${recentWorkout.type} - ${recentWorkout.exercise}`;
 }
