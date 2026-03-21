@@ -19,51 +19,98 @@ const LOCAL_EXERCISES = {
   ],
   Strength: [
     "Pull Up",
+    "Weighted Pull Up",
+    "Lock Off",
     "Row",
     "Deadlift",
-    "Curl",
+    "Finger Curl",
     "Push Up",
     "Plank"
   ]
 };
 
-function getStrengthSearchTerms() {
-  return [
-    "pull",
-    "push",
-    "press",
-    "row",
-    "deadlift",
-    "curl",
-    "squat",
-    "dip",
-    "plank",
-    "extension",
-    "raise",
-    "fly",
-    "pulldown"
-  ];
-}
-
-function getConditioningSearchTerms() {
-  return [
-    "jump",
-    "jack",
-    "burpee",
-    "mountain climber",
-    "run",
-    "high knees",
-    "rope",
-    "step",
-    "lunge",
-    "plank",
-    "crunch",
-    "sit-up",
-    "sit up",
-    "twist",
-    "cardio"
-  ];
-}
+const EXERCISE_PREVIEWS = {
+  "Max hangs": {
+    icon: "🧗",
+    description: "Short high-effort finger hangs used to build max grip strength on edges."
+  },
+  Repeaters: {
+    icon: "⏱️",
+    description: "Timed hang intervals with short rests to build forearm endurance and finger strength."
+  },
+  "Half crimp hangs": {
+    icon: "🖐️",
+    description: "Fingerboard hangs in a half crimp position to train a common climbing grip safely."
+  },
+  "Open hand hangs": {
+    icon: "🤲",
+    description: "Open-hand grip hangs that help with control and reduce stress compared to hard crimping."
+  },
+  "Three finger drag hangs": {
+    icon: "👌",
+    description: "Three-finger drag training that targets open-hand strength and grip variety."
+  },
+  "Density hangs": {
+    icon: "📈",
+    description: "Longer lower-intensity hangs for time under tension and finger endurance."
+  },
+  "ARC Training": {
+    icon: "🧗‍♂️",
+    description: "Low-intensity steady climbing to improve aerobic endurance and recovery on the wall."
+  },
+  "Jump Rope": {
+    icon: "🪢",
+    description: "Simple cardio work that improves rhythm, footwork, and general conditioning."
+  },
+  "Bike Intervals": {
+    icon: "🚴",
+    description: "Alternating hard and easy efforts on a bike to build cardiovascular fitness."
+  },
+  "Core Circuit": {
+    icon: "💪",
+    description: "A mix of trunk exercises to improve body tension and control for climbing."
+  },
+  "Shoulder Stability": {
+    icon: "🦴",
+    description: "Accessory work that helps support healthy shoulders and stronger pulling positions."
+  },
+  "Mobility Session": {
+    icon: "🧘",
+    description: "Light mobility work to improve movement quality, recovery, and flexibility."
+  },
+  "Pull Up": {
+    icon: "⬆️",
+    description: "Classic vertical pulling exercise that builds upper-back and arm strength."
+  },
+  "Weighted Pull Up": {
+    icon: "🏋️",
+    description: "A harder pull-up variation used to build higher-end pulling strength."
+  },
+  "Lock Off": {
+    icon: "🪨",
+    description: "Isometric pulling work that helps with control on steep terrain and hard moves."
+  },
+  Row: {
+    icon: "🚣",
+    description: "Horizontal pulling exercise that trains upper back strength and posture."
+  },
+  Deadlift: {
+    icon: "🏋️‍♂️",
+    description: "Compound lift that builds posterior chain strength and overall power."
+  },
+  "Finger Curl": {
+    icon: "✊",
+    description: "Forearm and grip accessory work that supports finger and hand strength."
+  },
+  "Push Up": {
+    icon: "📦",
+    description: "Simple pushing movement that helps balance out heavy pulling-focused training."
+  },
+  Plank: {
+    icon: "🧱",
+    description: "Core stability exercise that helps with tension and body positioning on the wall."
+  }
+};
 
 async function fetchFromApi(url) {
   const response = await fetch(url, {
@@ -79,65 +126,6 @@ async function fetchFromApi(url) {
   }
 
   return response.json();
-}
-
-async function fetchAllExercises() {
-  return fetchFromApi(EXERCISE_API_CONFIG.baseUrl);
-}
-
-function formatExerciseName(name) {
-  if (!name) return "";
-
-  return name
-    .split(" ")
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(" ");
-}
-
-function uniqueSortedNames(exercises, limit = 40) {
-  return [...new Set(
-    exercises
-      .map((exercise) => formatExerciseName(exercise.name))
-      .filter(Boolean)
-  )]
-    .sort()
-    .slice(0, limit);
-}
-
-function getExercisesByTerms(exercises, terms, limit = 40) {
-  const filtered = exercises.filter((exercise) => {
-    const name = exercise.name?.toLowerCase() || "";
-    return terms.some((term) => name.includes(term));
-  });
-
-  return uniqueSortedNames(filtered, limit);
-}
-
-function getConditioningFallbackFromDataset(exercises, limit = 40) {
-  const broaderFiltered = exercises.filter((exercise) => {
-    const name = exercise.name?.toLowerCase() || "";
-    const bodyPart = exercise.bodyPart?.toLowerCase() || "";
-    const equipment = exercise.equipment?.toLowerCase() || "";
-    const target = exercise.target?.toLowerCase() || "";
-
-    return (
-      equipment.includes("body weight") ||
-      equipment.includes("bodyweight") ||
-      bodyPart.includes("cardio") ||
-      bodyPart.includes("waist") ||
-      target.includes("cardiovascular system") ||
-      name.includes("jump") ||
-      name.includes("burpee") ||
-      name.includes("mountain climber") ||
-      name.includes("jack") ||
-      name.includes("high knees") ||
-      name.includes("plank") ||
-      name.includes("crunch") ||
-      name.includes("sit")
-    );
-  });
-
-  return uniqueSortedNames(broaderFiltered, limit);
 }
 
 export async function getExerciseDetails(name) {
@@ -156,28 +144,31 @@ export async function getExerciseDetails(name) {
 }
 
 export async function getExercisesByType(type) {
-  if (type === "Hangboard") {
-    return LOCAL_EXERCISES[type] || [];
-  }
+  return LOCAL_EXERCISES[type] || [];
+}
 
-  const data = await fetchAllExercises();
+export function getExercisePreview(type, name) {
+  if (!name) return null;
 
-  if (type === "Strength") {
-    const filtered = getExercisesByTerms(data, getStrengthSearchTerms(), 40);
-    return filtered.length > 0 ? filtered : LOCAL_EXERCISES.Strength;
-  }
+  const preview = EXERCISE_PREVIEWS[name];
+  if (preview) return preview;
 
-  if (type === "Conditioning") {
-    let filtered = getExercisesByTerms(data, getConditioningSearchTerms(), 40);
-
-    if (filtered.length < 8) {
-      filtered = getConditioningFallbackFromDataset(data, 40);
+  const fallbackByType = {
+    Hangboard: {
+      icon: "🧗",
+      description: "A climbing-specific grip exercise focused on finger strength and control."
+    },
+    Strength: {
+      icon: "💪",
+      description: "A strength-focused movement used to support climbing power and durability."
+    },
+    Conditioning: {
+      icon: "⚡",
+      description: "A conditioning-focused exercise used to improve endurance and recovery."
     }
+  };
 
-    return filtered.length > 0 ? filtered : LOCAL_EXERCISES.Conditioning;
-  }
-
-  return [];
+  return fallbackByType[type] || null;
 }
 
 export async function populateExerciseOptions(type, selectElement, messageElement) {
@@ -196,26 +187,18 @@ export async function populateExerciseOptions(type, selectElement, messageElemen
     `;
 
     if (messageElement) {
-      messageElement.textContent =
-        type === "Hangboard"
-          ? "Climbing exercise list loaded."
-          : `${type} exercises loaded from the external API.`;
+      messageElement.textContent = "Exercise list loaded.";
       messageElement.className = "form-message success";
     }
   } catch (error) {
-    console.error("Exercise API error:", error);
-
-    const fallback = LOCAL_EXERCISES[type] || [];
+    console.error("Exercise loading error:", error);
 
     selectElement.innerHTML = `
       <option value="">Select an exercise</option>
-      ${fallback
-        .map((exercise) => `<option value="${exercise}">${exercise}</option>`)
-        .join("")}
     `;
 
     if (messageElement) {
-      messageElement.textContent = "API could not load. Using fallback exercises.";
+      messageElement.textContent = "Could not load exercises.";
       messageElement.className = "form-message error";
     }
   }

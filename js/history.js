@@ -16,38 +16,65 @@ export async function displayWorkoutHistory() {
     (a, b) => new Date(b.date) - new Date(a.date)
   );
 
-  const workoutCards = await Promise.all(
-    sortedWorkouts.map(async (workout) => {
-      let details = null;
-
-      if (workout.type === "Strength" || workout.type === "Conditioning") {
-        details = await getExerciseDetails(workout.exercise);
-      }
-
-      return `
+  container.innerHTML = sortedWorkouts
+    .map(
+      (workout, index) => `
         <div class="workout-card">
           <h3>${workout.type} - ${workout.exercise}</h3>
           <p><strong>Date:</strong> ${workout.date}</p>
-          ${
-            details
-              ? `
-                <p><strong>Target:</strong> ${details.target || "N/A"}</p>
-                <p><strong>Equipment:</strong> ${details.equipment || "N/A"}</p>
-                ${
-                  details.gifUrl
-                    ? `<img src="${details.gifUrl}" alt="${workout.exercise}" class="history-exercise-image">`
-                    : ""
-                }
-              `
-              : ""
-          }
           <p><strong>Sets:</strong> ${workout.sets ?? "-"}</p>
           <p><strong>Reps / Seconds:</strong> ${workout.reps ?? "-"}</p>
           <p><strong>Notes:</strong> ${workout.notes || "-"}</p>
+          <button type="button" class="details-btn" data-index="${index}">
+            Show Exercise Details
+          </button>
+          <div class="exercise-details" id="details-${index}"></div>
+        </div>
+      `
+    )
+    .join("");
+
+  const detailButtons = container.querySelectorAll(".details-btn");
+
+  detailButtons.forEach((button) => {
+    button.addEventListener("click", async () => {
+      const index = button.dataset.index;
+      const detailsContainer = document.querySelector(`#details-${index}`);
+      const workout = sortedWorkouts[index];
+
+      if (!detailsContainer || !workout) return;
+
+      if (detailsContainer.dataset.loaded === "true") {
+        detailsContainer.innerHTML = "";
+        detailsContainer.dataset.loaded = "false";
+        button.textContent = "Show Exercise Details";
+        return;
+      }
+
+      detailsContainer.innerHTML = "<p>Loading exercise details...</p>";
+
+      const details = await getExerciseDetails(workout.exercise);
+
+      if (!details) {
+        detailsContainer.innerHTML = "<p>No exercise details found.</p>";
+        detailsContainer.dataset.loaded = "false";
+        return;
+      }
+
+      detailsContainer.innerHTML = `
+        <div class="exercise-preview-card">
+          <p><strong>Target:</strong> ${details.target || "N/A"}</p>
+          <p><strong>Equipment:</strong> ${details.equipment || "N/A"}</p>
+          ${
+            details.gifUrl
+              ? `<img src="${details.gifUrl}" alt="${workout.exercise}" class="history-exercise-image">`
+              : ""
+          }
         </div>
       `;
-    })
-  );
 
-  container.innerHTML = workoutCards.join("");
+      detailsContainer.dataset.loaded = "true";
+      button.textContent = "Hide Exercise Details";
+    });
+  });
 }

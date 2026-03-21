@@ -30,42 +30,137 @@
     <p id="formMessage" class="form-message" aria-live="polite"></p>
     <p id="apiMessage" class="form-message" aria-live="polite"></p>
 
-    <label for="date">Date</label>
-    <input type="date" id="date" name="date" required>
+    <div class="step-pills" aria-label="Workout form steps">
+      <span class="step-pill active">1. Date</span>
+      <span class="step-pill">2. Type</span>
+      <span class="step-pill">3. Exercise</span>
+      <span class="step-pill">4. Details</span>
+      <span class="step-pill">5. Review</span>
+    </div>
 
-    <label for="type">Workout Type</label>
-    <select id="type" name="type" required>
-      <option value="Hangboard">Hangboard</option>
-      <option value="Strength">Strength</option>
-      <option value="Conditioning">Conditioning</option>
-    </select>
+    <section class="form-step active" data-step="0">
+      <div class="step-header">
+        <p class="step-label">Step 1</p>
+        <h3>Choose the date</h3>
+        <p>Start with when this training session happened.</p>
+      </div>
 
-    <label for="exercise">Exercise</label>
-    <select id="exercise" name="exercise" required>
-      <option value="">Loading exercises...</option>
-    </select>
+      <label for="date">Date</label>
+      <input type="date" id="date" name="date" required>
 
-    <div id="exercisePreview" aria-live="polite"></div>
+      <div class="step-actions">
+        <button type="button" data-current-step="0" data-next-step="1">Next Step</button>
+      </div>
+    </section>
 
-    <label for="customExercise">Custom Exercise (optional)</label>
-    <input
-      type="text"
-      id="customExercise"
-      name="customExercise"
-      placeholder="Use this if your exercise is not listed"
-    >
+    <section class="form-step" data-step="1" hidden>
+      <div class="step-header">
+        <p class="step-label">Step 2</p>
+        <h3>Pick the workout type</h3>
+        <p>Choose the kind of session you did today.</p>
+      </div>
 
-    <label for="sets">Sets</label>
-    <input type="number" id="sets" name="sets" min="0">
+      <label for="type">Workout Type</label>
+      <select id="type" name="type" required>
+        <option value="Hangboard">Hangboard</option>
+        <option value="Strength">Strength</option>
+        <option value="Conditioning">Conditioning</option>
+      </select>
 
-    <label for="reps">Reps / Seconds</label>
-    <input type="number" id="reps" name="reps" min="0">
+      <div class="step-actions">
+        <button type="button" class="button-secondary" data-prev-step="0">Back</button>
+        <button type="button" data-current-step="1" data-next-step="2">Next Step</button>
+      </div>
+    </section>
 
-    <label for="notes">Notes</label>
-    <textarea id="notes" name="notes"></textarea>
+    <section class="form-step" data-step="2" hidden>
+      <div class="step-header">
+        <p class="step-label">Step 3</p>
+        <h3>Choose the exercise</h3>
+        <p>Pick one of the options below or type your own custom exercise.</p>
+      </div>
 
-    <button type="submit">Save Workout</button>
+      <input type="hidden" id="exercise" name="exercise">
+
+      <div id="exerciseGrid" class="exercise-grid" aria-live="polite"></div>
+
+      <label for="customExercise">Custom Exercise (optional)</label>
+      <input
+        type="text"
+        id="customExercise"
+        name="customExercise"
+        placeholder="Use this if your exercise is not listed"
+      >
+
+      <div class="step-actions">
+        <button type="button" class="button-secondary" data-prev-step="1">Back</button>
+        <button type="button" data-current-step="2" data-next-step="3">Next Step</button>
+      </div>
+    </section>
+
+    <section class="form-step" data-step="3" hidden>
+      <div class="step-header">
+        <p class="step-label">Step 4</p>
+        <h3>Add workout details</h3>
+        <p>Use the sliders to set your volume, then add any notes you want to keep.</p>
+      </div>
+
+      <div class="slider-card">
+        <div class="slider-header">
+          <label for="sets">Sets</label>
+          <span id="setsValue" class="slider-value">3</span>
+        </div>
+        <input type="range" id="sets" name="sets" min="0" max="10" value="3" step="1">
+        <div class="slider-scale">
+          <span>0</span>
+          <span>10</span>
+        </div>
+      </div>
+
+      <div class="slider-card">
+        <div class="slider-header">
+          <label for="reps">Reps / Seconds</label>
+          <span id="repsValue" class="slider-value">10</span>
+        </div>
+        <input type="range" id="reps" name="reps" min="0" max="60" value="10" step="1">
+        <div class="slider-scale">
+          <span>0</span>
+          <span>60</span>
+        </div>
+      </div>
+
+      <label for="notes">Notes</label>
+      <textarea id="notes" name="notes"></textarea>
+
+      <div class="step-actions">
+        <button type="button" class="button-secondary" data-prev-step="2">Back</button>
+        <button type="button" data-current-step="3" data-next-step="4">Review</button>
+      </div>
+    </section>
+
+    <section class="form-step" data-step="4" hidden>
+      <div class="step-header">
+        <p class="step-label">Step 5</p>
+        <h3>Review and save</h3>
+        <p>Check everything one last time before saving.</p>
+      </div>
+
+      <div id="workoutSummary" class="summary-card"></div>
+
+      <div class="step-actions">
+        <button type="button" class="button-secondary" data-prev-step="3">Back</button>
+        <button type="submit">Save Workout</button>
+      </div>
+    </section>
   </form>
 </main>
+
+<div id="submitOverlay" class="submit-overlay hidden" aria-hidden="true">
+  <div class="submit-overlay-content">
+    <div class="checkmark">✓</div>
+    <h3>Workout Saved</h3>
+    <p>Your training session has been logged.</p>
+  </div>
+</div>
 </body>
 </html>
