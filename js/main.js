@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (document.querySelector("#historyList")) {
     try {
       const { displayWorkoutHistory } = await import("./history.js");
-      displayWorkoutHistory();
+      await displayWorkoutHistory();
     } catch (error) {
       console.warn("History module not loaded:", error);
     }
