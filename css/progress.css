@@ -1,0 +1,86 @@
+.progress-section {
+  margin-bottom: 1.4rem;
+}
+
+.progress-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 0.8rem;
+}
+
+.progress-stat-card {
+  background: white;
+  border-radius: 14px;
+  padding: 0.9rem;
+  border: 1px solid rgba(24, 49, 38, 0.08);
+}
+
+.progress-stat-label {
+  font-size: 0.9rem;
+  color: #5b6a63;
+  font-weight: 600;
+  margin-bottom: 0.2rem;
+}
+
+.progress-stat-value {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--forest-dark);
+}
+
+.progress-grade-highlight {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--forest-dark);
+}
+
+/* climbing */
+
+.progress-climb-top {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 0.8rem;
+  margin-bottom: 1rem;
+}
+
+.grade-list {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.grade-row {
+  display: grid;
+  grid-template-columns: 50px 1fr 40px;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.grade-row-label {
+  font-weight: 700;
+}
+
+.grade-bar {
+  height: 8px;
+  background: #e0e7e3;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.grade-bar-fill {
+  height: 100%;
+  background: var(--forest-dark);
+}
+
+.grade-row-count {
+  text-align: right;
+  font-weight: 700;
+}
+
+.grade-row.highlight .grade-row-label {
+  color: var(--forest-dark);
+}
+
+.empty-text {
+  color: #5b6a63;
+  font-weight: 600;
+}

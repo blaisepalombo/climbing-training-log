@@ -1,0 +1,71 @@
+/* =========================
+   RESET + GLOBAL VARIABLES
+========================= */
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  --forest-dark: #183126;
+  --forest: #2c4f3f;
+  --forest-light: #5f7f6a;
+  --sage: #9caf88;
+  --sand: #e9dfd0;
+  --stone: #f3f1eb;
+  --text-dark: #1f2722;
+  --white-soft: rgba(255, 255, 255, 0.9);
+  --shadow: 0 10px 28px rgba(20, 30, 24, 0.12);
+  --shadow-hover: 0 14px 32px rgba(20, 30, 24, 0.16);
+}
+
+/* =========================
+   PAGE BASICS
+========================= */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: "Source Sans 3", "Segoe UI", sans-serif;
+  background: linear-gradient(to bottom, #eef3ee, #f3f1eb);
+  color: var(--text-dark);
+  line-height: 1.55;
+}
+
+p {
+  margin: 0.45rem 0;
+}
+
+h2 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--forest-dark);
+}
+
+label {
+  font-weight: 700;
+  color: var(--forest-dark);
+  margin-bottom: -0.35rem;
+}
+
+input,
+select,
+textarea,
+button {
+  font: inherit;
+}
+
+/* =========================
+   REDUCED MOTION
+========================= */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto;
+    transition: none !important;
+  }
+}

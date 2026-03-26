@@ -1,0 +1,76 @@
+/* =========================
+   SHARED CARD STYLES
+========================= */
+section,
+form,
+.workout-card {
+  background: var(--white-soft);
+  border: 1px solid rgba(93, 122, 104, 0.16);
+  border-left: 6px solid var(--forest-light);
+  border-radius: 18px;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+  box-shadow: var(--shadow);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+section:hover,
+form:hover,
+.workout-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-hover);
+}
+
+section h3,
+.workout-card h3 {
+  margin-top: 0;
+  margin-bottom: 0.65rem;
+  color: var(--forest);
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+.workout-card {
+  background: linear-gradient(
+    to right,
+    rgba(156, 175, 136, 0.08),
+    rgba(255, 255, 255, 0.96)
+  );
+}
+
+.workout-card p {
+  margin: 0.45rem 0;
+}
+
+.summary-card {
+  background: linear-gradient(
+    to bottom right,
+    rgba(156, 175, 136, 0.12),
+    rgba(255, 255, 255, 0.96)
+  );
+  border: 1px solid rgba(93, 122, 104, 0.16);
+  border-radius: 16px;
+  padding: 1rem;
+}
+
+.summary-grid {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.summary-grid div {
+  display: grid;
+  gap: 0.15rem;
+  padding: 0.75rem 0.85rem;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.summary-grid strong {
+  color: var(--forest-dark);
+}
+
+.summary-grid span {
+  color: #3a4a41;
+  word-break: break-word;
+}
