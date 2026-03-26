@@ -873,3 +873,168 @@ input[type="range"]::-moz-range-thumb {
     width: 100%;
   }
 }
+
+.page-intro {
+  margin-bottom: 1.2rem;
+  color: #4d5f56;
+}
+
+.progress-section {
+  margin-bottom: 2rem;
+}
+
+.progress-section-header {
+  margin-bottom: 1rem;
+}
+
+.progress-section-header h3 {
+  margin-bottom: 0.2rem;
+}
+
+.progress-section-header p {
+  margin: 0;
+  color: #5b6a63;
+}
+
+.progress-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+}
+
+.progress-stat-card,
+.progress-climb-card {
+  background: #fff;
+  border: 1px solid rgba(24, 49, 38, 0.08);
+  border-radius: 16px;
+  padding: 1rem;
+  box-shadow: 0 10px 24px rgba(24, 49, 38, 0.05);
+}
+
+.progress-stat-label {
+  margin: 0 0 0.35rem;
+  font-size: 0.95rem;
+  color: #5b6a63;
+  font-weight: 600;
+}
+
+.progress-stat-value {
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--forest-dark);
+}
+
+.progress-grade-highlight {
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--forest-dark);
+}
+
+.progress-climb-top {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.2rem;
+}
+
+.grade-progress-wrap {
+  position: relative;
+  overflow-x: auto;
+  padding-top: 2.25rem;
+  padding-bottom: 0.4rem;
+}
+
+.grade-progress-track {
+  position: absolute;
+  top: 3.1rem;
+  left: 0;
+  right: 0;
+  height: 6px;
+  border-radius: 999px;
+  background: linear-gradient(to right, #d7dfdb, #8da196, #183126);
+}
+
+.grade-progress-marker {
+  position: absolute;
+  top: 0.2rem;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.grade-progress-marker::after {
+  content: "";
+  width: 3px;
+  height: 2rem;
+  background: var(--forest-dark);
+  border-radius: 999px;
+  margin-top: 0.2rem;
+}
+
+.grade-progress-marker span {
+  background: var(--forest-dark);
+  color: white;
+  padding: 0.28rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.grade-dots-row {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(52px, 1fr);
+  gap: 0.45rem;
+  align-items: start;
+  min-width: max-content;
+}
+
+.grade-dot-item {
+  text-align: center;
+}
+
+.grade-dot-count {
+  min-height: 1.1rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--forest-dark);
+  margin-bottom: 0.35rem;
+}
+
+.grade-dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  margin: 0 auto 0.35rem;
+  background: #cfd8d3;
+  border: 2px solid #cfd8d3;
+  transition: transform 0.3s ease;
+}
+
+.grade-dot.achieved {
+  background: #9fb1a7;
+  border-color: #9fb1a7;
+}
+
+.grade-dot.active {
+  background: var(--forest-dark);
+  border-color: var(--forest-dark);
+  transform: scale(1.12);
+}
+
+.grade-dot-label {
+  font-size: 0.82rem;
+  color: #4d5f56;
+  font-weight: 600;
+}
+
+@media (max-width: 700px) {
+  .progress-stat-value,
+  .progress-grade-highlight {
+    font-size: 1.5rem;
+  }
+}

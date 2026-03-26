@@ -1,7 +1,25 @@
 import { saveWorkout } from "./storage.js";
 import { buildWorkoutFromForm, validateWorkout } from "./trainingLog.js";
-import { getExercisesByType, getExercisePreview } from "./exerciseAPI.js";
+import { getExercisesByType, getExercisePreview } from "./exercises.js";
 import { formatDateForInput, qs, showMessage } from "./utils.js";
+
+const CLIMBING_TYPES = ["Bouldering", "Top Rope", "Lead"];
+const TRAINING_TYPES = ["Hangboard", "Strength", "Conditioning"];
+
+const BOULDER_GRADES = [
+  "VB", "V0", "V1", "V2", "V3", "V4", "V5", "V6",
+  "V7", "V8", "V9", "V10", "V11", "V12", "V13", "V14", "V15", "V16", "V17"
+];
+
+const ROPE_GRADES = [
+  "5.6", "5.7", "5.8", "5.9",
+  "5.10a", "5.10b", "5.10c", "5.10d",
+  "5.11a", "5.11b", "5.11c", "5.11d",
+  "5.12a", "5.12b", "5.12c", "5.12d",
+  "5.13a", "5.13b", "5.13c", "5.13d",
+  "5.14a", "5.14b", "5.14c", "5.14d",
+  "5.15a", "5.15b", "5.15c", "5.15d"
+];
 
 function getStepElements() {
   return Array.from(document.querySelectorAll(".form-step"));
@@ -28,21 +46,128 @@ function showStep(stepIndex) {
   updateStepPills(stepIndex);
 }
 
+function isClimbingType(type) {
+  return CLIMBING_TYPES.includes(type);
+}
+
+function isTrainingType(type) {
+  return TRAINING_TYPES.includes(type);
+}
+
+function populateGradeOptions(type) {
+  const gradeSelect = qs("#grade");
+  if (!gradeSelect) return;
+
+  let grades = [];
+
+  if (type === "Bouldering") {
+    grades = BOULDER_GRADES;
+  } else if (type === "Top Rope" || type === "Lead") {
+    grades = ROPE_GRADES;
+  }
+
+  gradeSelect.innerHTML = `
+    <option value="">Select grade</option>
+    ${grades.map((grade) => `<option value="${grade}">${grade}</option>`).join("")}
+  `;
+}
+
+function updateClimbingText(type) {
+  const sessionInfoText = qs("#sessionInfoText");
+  const gradeLabel = document.querySelector('label[for="grade"]');
+  const projectNameLabel = document.querySelector('label[for="projectName"]');
+
+  if (!sessionInfoText || !gradeLabel || !projectNameLabel) return;
+
+  if (type === "Bouldering") {
+    sessionInfoText.textContent = "Log the gym, the grade, and whether you completed it or are still working on it.";
+    gradeLabel.textContent = "Boulder Grade";
+    projectNameLabel.textContent = "Problem Name (optional)";
+    return;
+  }
+
+  if (type === "Top Rope") {
+    sessionInfoText.textContent = "Log the gym, route grade, and whether you completed it or it is still in progress.";
+    gradeLabel.textContent = "Route Grade";
+    projectNameLabel.textContent = "Route Name (optional)";
+    return;
+  }
+
+  if (type === "Lead") {
+    sessionInfoText.textContent = "Log the gym, route grade, and whether you completed it or are still projecting it.";
+    gradeLabel.textContent = "Route Grade";
+    projectNameLabel.textContent = "Route Name (optional)";
+    return;
+  }
+
+  sessionInfoText.textContent = "Fill out the details for your entry.";
+  gradeLabel.textContent = "Grade";
+  projectNameLabel.textContent = "Route or Problem Name (optional)";
+}
+
+function toggleSessionFields(type) {
+  const climbingFields = qs("#climbingFields");
+  const trainingFields = qs("#trainingFields");
+  const apiMessage = qs("#apiMessage");
+
+  if (climbingFields) {
+    climbingFields.hidden = !isClimbingType(type);
+  }
+
+  if (trainingFields) {
+    trainingFields.hidden = !isTrainingType(type);
+  }
+
+  if (apiMessage && isClimbingType(type)) {
+    apiMessage.textContent = "";
+    apiMessage.className = "form-message";
+  }
+
+  if (isClimbingType(type)) {
+    populateGradeOptions(type);
+    updateClimbingText(type);
+  }
+}
+
+function updateSliderDisplays() {
+  const setsInput = qs("#sets");
+  const repsInput = qs("#reps");
+  const setsValue = qs("#setsValue");
+  const repsValue = qs("#repsValue");
+
+  if (setsInput && setsValue) {
+    setsValue.textContent = setsInput.value;
+  }
+
+  if (repsInput && repsValue) {
+    repsValue.textContent = repsInput.value;
+  }
+}
+
 function isStepValid(stepIndex) {
   if (stepIndex === 0) {
-    const dateInput = qs("#date");
-    return Boolean(dateInput?.value);
+    return Boolean(qs("#date")?.value);
   }
 
   if (stepIndex === 1) {
-    const typeSelect = qs("#type");
-    return Boolean(typeSelect?.value);
+    return Boolean(qs("#type")?.value);
   }
 
   if (stepIndex === 2) {
-    const exerciseInput = qs("#exercise");
-    const customExercise = qs("#customExercise");
-    return Boolean(exerciseInput?.value || customExercise?.value.trim());
+    const type = qs("#type")?.value;
+
+    if (isClimbingType(type)) {
+      const gym = qs("#gym")?.value.trim();
+      const grade = qs("#grade")?.value;
+      const status = qs("#status")?.value;
+      return Boolean(gym && grade && status);
+    }
+
+    if (isTrainingType(type)) {
+      const exerciseInput = qs("#exercise");
+      const customExercise = qs("#customExercise");
+      return Boolean(exerciseInput?.value || customExercise?.value.trim());
+    }
   }
 
   return true;
@@ -63,6 +188,7 @@ function wireStepButtons(messageBox) {
       }
 
       showMessage(messageBox, "");
+      updateSummary();
       showStep(nextStep);
       window.scrollTo({ top: 0, behavior: "smooth" });
     });
@@ -72,49 +198,55 @@ function wireStepButtons(messageBox) {
     button.addEventListener("click", () => {
       const prevStep = Number(button.dataset.prevStep);
       showMessage(messageBox, "");
+      updateSummary();
       showStep(prevStep);
       window.scrollTo({ top: 0, behavior: "smooth" });
     });
   });
 }
 
-function updateSliderDisplays() {
-  const setsInput = qs("#sets");
-  const repsInput = qs("#reps");
-  const setsValue = qs("#setsValue");
-  const repsValue = qs("#repsValue");
-
-  if (setsInput && setsValue) {
-    setsValue.textContent = setsInput.value;
-  }
-
-  if (repsInput && repsValue) {
-    repsValue.textContent = repsInput.value;
-  }
-}
-
 function updateSummary() {
-  const dateInput = qs("#date");
-  const typeSelect = qs("#type");
-  const exerciseInput = qs("#exercise");
-  const customExercise = qs("#customExercise");
-  const setsInput = qs("#sets");
-  const repsInput = qs("#reps");
-  const notesInput = qs("#notes");
+  const type = qs("#type")?.value || "";
   const summaryBox = qs("#workoutSummary");
 
   if (!summaryBox) return;
 
-  const chosenExercise = customExercise?.value.trim() || exerciseInput?.value || "Not selected";
+  const date = qs("#date")?.value || "Not selected";
+  const notes = qs("#notes")?.value.trim() || "-";
+
+  if (isClimbingType(type)) {
+    const gym = qs("#gym")?.value.trim() || "-";
+    const grade = qs("#grade")?.value || "-";
+    const status = qs("#status")?.value || "-";
+    const projectName = qs("#projectName")?.value.trim() || "-";
+
+    summaryBox.innerHTML = `
+      <div class="summary-grid">
+        <div><strong>Date</strong><span>${date}</span></div>
+        <div><strong>Type</strong><span>${type}</span></div>
+        <div><strong>Gym</strong><span>${gym}</span></div>
+        <div><strong>Grade</strong><span>${grade}</span></div>
+        <div><strong>Status</strong><span>${status}</span></div>
+        <div><strong>Name</strong><span>${projectName}</span></div>
+        <div><strong>Notes</strong><span>${notes}</span></div>
+      </div>
+    `;
+    return;
+  }
+
+  const chosenExercise =
+    qs("#customExercise")?.value.trim() || qs("#exercise")?.value || "Not selected";
+  const sets = qs("#sets")?.value || "-";
+  const reps = qs("#reps")?.value || "-";
 
   summaryBox.innerHTML = `
     <div class="summary-grid">
-      <div><strong>Date</strong><span>${dateInput?.value || "Not selected"}</span></div>
-      <div><strong>Type</strong><span>${typeSelect?.value || "Not selected"}</span></div>
+      <div><strong>Date</strong><span>${date}</span></div>
+      <div><strong>Type</strong><span>${type}</span></div>
       <div><strong>Exercise</strong><span>${chosenExercise}</span></div>
-      <div><strong>Sets</strong><span>${setsInput?.value || "-"}</span></div>
-      <div><strong>Reps / Seconds</strong><span>${repsInput?.value || "-"}</span></div>
-      <div><strong>Notes</strong><span>${notesInput?.value.trim() || "-"}</span></div>
+      <div><strong>Sets</strong><span>${sets}</span></div>
+      <div><strong>Reps / Seconds</strong><span>${reps}</span></div>
+      <div><strong>Notes</strong><span>${notes}</span></div>
     </div>
   `;
 }
@@ -125,6 +257,16 @@ async function renderExerciseGrid(type) {
   const apiMessage = qs("#apiMessage");
 
   if (!grid || !exerciseInput) return;
+
+  if (!isTrainingType(type)) {
+    grid.innerHTML = "";
+    exerciseInput.value = "";
+    if (apiMessage) {
+      apiMessage.textContent = "";
+      apiMessage.className = "form-message";
+    }
+    return;
+  }
 
   grid.innerHTML = `<p class="loading-text">Loading exercises...</p>`;
 
@@ -218,6 +360,22 @@ function showSubmitOverlay() {
   }, 1500);
 }
 
+function clearTrainingSelection() {
+  const exerciseInput = qs("#exercise");
+  const customExercise = qs("#customExercise");
+  const grid = qs("#exerciseGrid");
+
+  if (exerciseInput) exerciseInput.value = "";
+  if (customExercise) customExercise.value = "";
+
+  if (grid) {
+    grid.querySelectorAll(".exercise-card").forEach((card) => {
+      card.classList.remove("selected");
+      card.setAttribute("aria-pressed", "false");
+    });
+  }
+}
+
 export async function initWorkoutForm() {
   const form = qs("#workoutForm");
   if (!form) return;
@@ -230,12 +388,20 @@ export async function initWorkoutForm() {
   const notesInput = qs("#notes");
   const messageBox = qs("#formMessage");
 
-  if (!form || !typeSelect) return;
+  const climbingInputs = [
+    qs("#gym"),
+    qs("#grade"),
+    qs("#status"),
+    qs("#projectName")
+  ];
+
+  if (!typeSelect) return;
 
   if (dateInput) {
     dateInput.value = formatDateForInput();
   }
 
+  toggleSessionFields(typeSelect.value);
   updateSliderDisplays();
   await renderExerciseGrid(typeSelect.value);
   updateSummary();
@@ -243,8 +409,14 @@ export async function initWorkoutForm() {
   showStep(0);
 
   typeSelect.addEventListener("change", async () => {
-    await renderExerciseGrid(typeSelect.value);
+    toggleSessionFields(typeSelect.value);
+
+    if (isClimbingType(typeSelect.value)) {
+      clearTrainingSelection();
+    }
+
     updateSummary();
+    await renderExerciseGrid(typeSelect.value);
   });
 
   customExercise?.addEventListener("input", () => {
@@ -266,7 +438,12 @@ export async function initWorkoutForm() {
   });
 
   dateInput?.addEventListener("input", updateSummary);
-  typeSelect.addEventListener("input", updateSummary);
+  notesInput?.addEventListener("input", updateSummary);
+
+  climbingInputs.forEach((input) => {
+    input?.addEventListener("input", updateSummary);
+    input?.addEventListener("change", updateSummary);
+  });
 
   setsInput?.addEventListener("input", () => {
     updateSliderDisplays();
@@ -277,8 +454,6 @@ export async function initWorkoutForm() {
     updateSliderDisplays();
     updateSummary();
   });
-
-  notesInput?.addEventListener("input", updateSummary);
 
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
@@ -300,6 +475,10 @@ export async function initWorkoutForm() {
       dateInput.value = formatDateForInput();
     }
 
+    if (typeSelect) {
+      typeSelect.value = "Bouldering";
+    }
+
     if (setsInput) {
       setsInput.value = "3";
     }
@@ -308,11 +487,12 @@ export async function initWorkoutForm() {
       repsInput.value = "10";
     }
 
+    toggleSessionFields(typeSelect.value);
     updateSliderDisplays();
     await renderExerciseGrid(typeSelect.value);
     updateSummary();
     showStep(0);
 
-    showMessage(messageBox, "Workout saved successfully.");
+    showMessage(messageBox, "Entry saved successfully.");
   });
 }

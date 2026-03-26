@@ -1,7 +1,11 @@
 document.addEventListener("DOMContentLoaded", async () => {
   if (document.querySelector("#workoutForm")) {
-    const { initWorkoutForm } = await import("./formHandler.js");
-    await initWorkoutForm();
+    try {
+      const { initWorkoutForm } = await import("./formHandler.js");
+      await initWorkoutForm();
+    } catch (error) {
+      console.warn("Form module not loaded:", error);
+    }
   }
 
   if (document.querySelector("#historyList")) {
@@ -16,13 +20,13 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (document.querySelector("#totalSessions")) {
     try {
       const { displayDashboard } = await import("./dashboard.js");
-      displayDashboard();
+      await displayDashboard();
     } catch (error) {
       console.warn("Dashboard module not loaded:", error);
     }
   }
 
-  if (document.querySelector("#progressPage")) {
+  if (document.querySelector("#overallCounts")) {
     try {
       const { displayProgress } = await import("./progress.js");
       displayProgress();

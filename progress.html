@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Training Progress</title>
+  <title>Progress</title>
   <link rel="stylesheet" href="css/styles.css">
   <script type="module" src="js/main.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -11,32 +11,77 @@
   <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
-
 <header>
   <nav>
     <h1>Climbing Training Log</h1>
     <ul>
       <li><a href="index.html">Home</a></li>
-      <li><a href="log.html">Log Workout</a></li>
+      <li><a href="log.html">Log Entry</a></li>
       <li><a href="history.html">History</a></li>
       <li><a href="progress.html">Progress</a></li>
     </ul>
   </nav>
 </header>
 
-<main id="progressPage">
+<main>
   <h2>Progress</h2>
+  <p class="page-intro">See how your climbing and training has been building over time.</p>
 
-  <section>
-    <h3>Total Workouts</h3>
-    <p id="totalWorkouts">0</p>
+  <section class="progress-section">
+    <div class="progress-section-header">
+      <h3>Overall Activity</h3>
+      <p>How often each type of entry has been logged.</p>
+    </div>
+    <div id="overallCounts" class="progress-grid"></div>
   </section>
 
-  <section>
-    <h3>Most Common Workout Type</h3>
-    <p id="commonWorkout">None yet</p>
+  <section class="progress-section">
+    <div class="progress-section-header">
+      <h3>Bouldering Progress</h3>
+      <p>Completed climbs only. Dots show how many sends you have at each grade.</p>
+    </div>
+    <div id="boulderingProgress"></div>
+  </section>
+
+  <section class="progress-section">
+    <div class="progress-section-header">
+      <h3>Top Rope Progress</h3>
+      <p>Completed climbs only. Dots show how many sends you have at each grade.</p>
+    </div>
+    <div id="topRopeProgress"></div>
+  </section>
+
+  <section class="progress-section">
+    <div class="progress-section-header">
+      <h3>Lead Progress</h3>
+      <p>Completed climbs only. Dots show how many sends you have at each grade.</p>
+    </div>
+    <div id="leadProgress"></div>
+  </section>
+
+  <section class="progress-section">
+    <div class="progress-section-header">
+      <h3>Hangboard</h3>
+      <p>Volume and best effort so far.</p>
+    </div>
+    <div id="hangboardStats" class="progress-grid"></div>
+  </section>
+
+  <section class="progress-section">
+    <div class="progress-section-header">
+      <h3>Strength</h3>
+      <p>Volume and best effort so far.</p>
+    </div>
+    <div id="strengthStats" class="progress-grid"></div>
+  </section>
+
+  <section class="progress-section">
+    <div class="progress-section-header">
+      <h3>Conditioning</h3>
+      <p>Volume and best effort so far.</p>
+    </div>
+    <div id="conditioningStats" class="progress-grid"></div>
   </section>
 </main>
-
 </body>
 </html>

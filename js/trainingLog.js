@@ -1,21 +1,42 @@
-import { cleanText, toNumberOrNull } from "./utils.js";
+const CLIMBING_TYPES = ["Bouldering", "Top Rope", "Lead"];
+const TRAINING_TYPES = ["Hangboard", "Strength", "Conditioning"];
+
+function isClimbingType(type) {
+  return CLIMBING_TYPES.includes(type);
+}
+
+function isTrainingType(type) {
+  return TRAINING_TYPES.includes(type);
+}
 
 export function buildWorkoutFromForm(form) {
-  const formData = new FormData(form);
+  const type = form.type.value;
+  const customExercise = form.customExercise?.value.trim() || "";
+  const selectedExercise = form.exercise?.value || "";
+  const chosenExercise = customExercise || selectedExercise;
 
-  const selectedExercise = cleanText(formData.get("exercise"));
-  const customExercise = cleanText(formData.get("customExercise"));
-
-  return {
-    id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()),
-    date: cleanText(formData.get("date")),
-    type: cleanText(formData.get("type")),
-    exercise: customExercise || selectedExercise,
-    sets: toNumberOrNull(formData.get("sets")),
-    reps: toNumberOrNull(formData.get("reps")),
-    notes: cleanText(formData.get("notes")),
+  const workout = {
+    id: crypto.randomUUID(),
+    date: form.date.value,
+    type,
+    notes: form.notes?.value.trim() || "",
     createdAt: new Date().toISOString()
   };
+
+  if (isClimbingType(type)) {
+    workout.gym = form.gym?.value.trim() || "";
+    workout.grade = form.grade?.value || "";
+    workout.status = form.status?.value || "";
+    workout.projectName = form.projectName?.value.trim() || "";
+  }
+
+  if (isTrainingType(type)) {
+    workout.exercise = chosenExercise;
+    workout.sets = Number(form.sets?.value) || 0;
+    workout.reps = Number(form.reps?.value) || 0;
+  }
+
+  return workout;
 }
 
 export function validateWorkout(workout) {
@@ -29,33 +50,54 @@ export function validateWorkout(workout) {
   if (!workout.type) {
     return {
       isValid: false,
-      message: "Please choose a workout type."
+      message: "Please choose a type."
     };
   }
 
-  if (!workout.exercise) {
-    return {
-      isValid: false,
-      message: "Please choose an exercise or enter a custom one."
-    };
+  if (isClimbingType(workout.type)) {
+    if (!workout.gym) {
+      return {
+        isValid: false,
+        message: "Please enter a gym."
+      };
+    }
+
+    if (!workout.grade) {
+      return {
+        isValid: false,
+        message: "Please choose a grade."
+      };
+    }
+
+    if (!workout.status) {
+      return {
+        isValid: false,
+        message: "Please choose a status."
+      };
+    }
   }
 
-  if (workout.sets !== null && workout.sets < 0) {
+  if (isTrainingType(workout.type) && !workout.exercise) {
     return {
       isValid: false,
-      message: "Sets cannot be negative."
-    };
-  }
-
-  if (workout.reps !== null && workout.reps < 0) {
-    return {
-      isValid: false,
-      message: "Reps cannot be negative."
+      message: "Please choose or enter an exercise."
     };
   }
 
   return {
     isValid: true,
-    message: "Workout is valid."
+    message: ""
   };
+}
+
+export function isClimbingSession(workout) {
+  return isClimbingType(workout.type);
+}
+
+export function isTrainingSession(workout) {
+  return isTrainingType(workout.type);
+}
+
+export function isProject(workout) {
+  return isClimbingType(workout.type) && workout.status === "in_progress";
 }

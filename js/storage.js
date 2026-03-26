@@ -14,10 +14,28 @@ export function getWorkouts() {
   }
 }
 
+export function saveAllWorkouts(workouts) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(workouts));
+}
+
 export function saveWorkout(workout) {
   const workouts = getWorkouts();
   workouts.push(workout);
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(workouts));
+  saveAllWorkouts(workouts);
+}
+
+export function updateWorkoutStatus(id, newStatus) {
+  const workouts = getWorkouts();
+  const updated = workouts.map((workout) =>
+    workout.id === id ? { ...workout, status: newStatus } : workout
+  );
+  saveAllWorkouts(updated);
+}
+
+export function deleteWorkout(id) {
+  const workouts = getWorkouts();
+  const updated = workouts.filter((workout) => workout.id !== id);
+  saveAllWorkouts(updated);
 }
 
 export function clearWorkouts() {
