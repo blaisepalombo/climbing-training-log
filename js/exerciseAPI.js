@@ -1,5 +1,3 @@
-import { EXERCISE_API_CONFIG } from "./apiConfig.js";
-
 const LOCAL_EXERCISES = {
   Hangboard: [
     "Max hangs",
@@ -112,37 +110,6 @@ const EXERCISE_PREVIEWS = {
   }
 };
 
-async function fetchFromApi(url) {
-  const response = await fetch(url, {
-    method: "GET",
-    headers: {
-      "X-RapidAPI-Key": EXERCISE_API_CONFIG.rapidApiKey,
-      "X-RapidAPI-Host": EXERCISE_API_CONFIG.rapidApiHost
-    }
-  });
-
-  if (!response.ok) {
-    throw new Error(`API request failed with status ${response.status}`);
-  }
-
-  return response.json();
-}
-
-export async function getExerciseDetails(name) {
-  if (!name) return null;
-
-  try {
-    const data = await fetchFromApi(
-      `${EXERCISE_API_CONFIG.baseUrl}/name/${encodeURIComponent(name.toLowerCase())}`
-    );
-
-    return data[0] || null;
-  } catch (error) {
-    console.error("Exercise details error:", error);
-    return null;
-  }
-}
-
 export async function getExercisesByType(type) {
   return LOCAL_EXERCISES[type] || [];
 }
@@ -168,38 +135,22 @@ export function getExercisePreview(type, name) {
     }
   };
 
-  return fallbackByType[type] || null;
+  return fallbackByType[type] || {
+    icon: "🏔️",
+    description: "A climbing workout entry saved in your training log."
+  };
 }
 
-export async function populateExerciseOptions(type, selectElement, messageElement) {
-  if (!selectElement) return;
+export async function getExerciseDetails(name, type = "") {
+  const preview = getExercisePreview(type, name);
 
-  selectElement.innerHTML = `<option value="">Loading exercises...</option>`;
+  if (!preview) return null;
 
-  try {
-    const exercises = await getExercisesByType(type);
-
-    selectElement.innerHTML = `
-      <option value="">Select an exercise</option>
-      ${exercises
-        .map((exercise) => `<option value="${exercise}">${exercise}</option>`)
-        .join("")}
-    `;
-
-    if (messageElement) {
-      messageElement.textContent = "Exercise list loaded.";
-      messageElement.className = "form-message success";
-    }
-  } catch (error) {
-    console.error("Exercise loading error:", error);
-
-    selectElement.innerHTML = `
-      <option value="">Select an exercise</option>
-    `;
-
-    if (messageElement) {
-      messageElement.textContent = "Could not load exercises.";
-      messageElement.className = "form-message error";
-    }
-  }
+  return {
+    target: type || "General climbing",
+    equipment: "Bodyweight / gym equipment",
+    gifUrl: "",
+    description: preview.description,
+    icon: preview.icon
+  };
 }

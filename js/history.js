@@ -53,7 +53,7 @@ export async function displayWorkoutHistory() {
 
       detailsContainer.innerHTML = "<p>Loading exercise details...</p>";
 
-      const details = await getExerciseDetails(workout.exercise);
+      const details = await getExerciseDetails(workout.exercise, workout.type);
 
       if (!details) {
         detailsContainer.innerHTML = "<p>No exercise details found.</p>";
@@ -63,13 +63,9 @@ export async function displayWorkoutHistory() {
 
       detailsContainer.innerHTML = `
         <div class="exercise-preview-card">
-          <p><strong>Target:</strong> ${details.target || "N/A"}</p>
+          <p><strong>Category:</strong> ${workout.type || "General climbing"}</p>
           <p><strong>Equipment:</strong> ${details.equipment || "N/A"}</p>
-          ${
-            details.gifUrl
-              ? `<img src="${details.gifUrl}" alt="${workout.exercise}" class="history-exercise-image">`
-              : ""
-          }
+          <p><strong>Description:</strong> ${details.description || "No description available."}</p>
         </div>
       `;
 
