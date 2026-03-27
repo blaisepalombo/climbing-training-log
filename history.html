@@ -12,25 +12,48 @@
 </head>
 <body>
 
-<header>
-  <nav>
+<header class="hero-header">
+  <nav class="site-nav">
     <h1>Climbing Training Log</h1>
     <ul>
       <li><a href="index.html">Home</a></li>
-      <li><a href="log.html">Log Workout</a></li>
-      <li><a href="history.html">History</a></li>
+      <li><a href="log.html">Log Entry</a></li>
+      <li><a href="history.html" aria-current="page">History</a></li>
       <li><a href="progress.html">Progress</a></li>
     </ul>
   </nav>
+
+  <div class="hero-banner hero-banner--small">
+    <img src="images/history.jpg" alt="Climbing history" class="hero-banner-image">
+    <div class="hero-overlay">
+      <h2 class="hero-title">Training History</h2>
+    </div>
+  </div>
 </header>
 
 <main>
   <h2>Training History</h2>
 
+  <section class="history-toolbar">
+    <div class="history-filter-group">
+      <label for="historyFilter">Filter Entries</label>
+      <select id="historyFilter">
+        <option value="all">All Visible Entries</option>
+        <option value="climbing">Climbing Only</option>
+        <option value="training">Training Only</option>
+        <option value="Bouldering">Bouldering</option>
+        <option value="Top Rope">Top Rope</option>
+        <option value="Lead">Lead</option>
+        <option value="Hangboard">Hangboard</option>
+        <option value="Strength">Strength</option>
+        <option value="Conditioning">Conditioning</option>
+      </select>
+    </div>
+  </section>
+
   <section id="historyList">
     <p>No workouts logged yet.</p>
   </section>
-
 </main>
 
 </body>

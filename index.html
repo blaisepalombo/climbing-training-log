@@ -13,10 +13,10 @@
 <body>
 
 <header class="hero-header">
-  <nav>
+  <nav class="site-nav">
     <h1>Climbing Training Log</h1>
     <ul>
-      <li><a href="index.html">Home</a></li>
+      <li><a href="index.html" aria-current="page">Home</a></li>
       <li><a href="log.html">Log Entry</a></li>
       <li><a href="history.html">History</a></li>
       <li><a href="progress.html">Progress</a></li>
@@ -35,13 +35,13 @@
 </header>
 
 <main class="dashboard-page">
-  <section class="dashboard-summary dashboard-cluster--full">
+  <section class="dashboard-summary">
     <div class="summary-header">
-      <div>
-        <p class="eyebrow">dashboard</p>
+      <div class="summary-copy">
+        <p class="eyebrow">home</p>
         <h2>Training Snapshot</h2>
         <p class="dashboard-intro">
-          A quick look at your recent climbing and training.
+          A quick look at recent climbing, training, and open projects.
         </p>
       </div>
 
@@ -64,12 +64,12 @@
     </div>
 
     <div class="dashboard-top-grid">
-      <article class="dashboard-stat-card dashboard-stat-card--primary">
+      <article class="dashboard-stat-card dashboard-stat-card--soft">
         <p class="dashboard-stat-label">Total Logged Entries</p>
         <p id="totalSessions" class="dashboard-stat-value">0</p>
       </article>
 
-      <article class="dashboard-stat-card dashboard-stat-card--primary">
+      <article class="dashboard-stat-card dashboard-stat-card--soft">
         <p class="dashboard-stat-label">Sessions This Week</p>
         <p id="sessionsThisWeek" class="dashboard-stat-value">0</p>
       </article>
@@ -94,8 +94,8 @@
 
   <section class="dashboard-cluster">
     <div class="cluster-heading">
-      <h3>Climbing Snapshot</h3>
-      <p>Fast climbing stats from your saved entries.</p>
+      <h3>Climbing Stats</h3>
+      <p>Quick climbing trends from your saved entries.</p>
     </div>
 
     <div class="dashboard-stat-grid">
@@ -118,8 +118,8 @@
 
   <section class="dashboard-cluster">
     <div class="cluster-heading">
-      <h3>Projects</h3>
-      <p>Current project status at a glance.</p>
+      <h3>Project Stats</h3>
+      <p>Status totals across your climbing projects.</p>
     </div>
 
     <div class="dashboard-stat-grid">
@@ -142,8 +142,8 @@
 
   <section class="dashboard-cluster">
     <div class="cluster-heading">
-      <h3>Training Snapshot</h3>
-      <p>Quick non-climbing stats.</p>
+      <h3>Training Stats</h3>
+      <p>Quick non-climbing training totals.</p>
     </div>
 
     <div class="dashboard-stat-grid">

@@ -3,7 +3,8 @@ export function qs(selector, parent = document) {
 }
 
 export function formatDateForInput(date = new Date()) {
-  return date.toISOString().split("T")[0];
+  const localDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+  return localDate.toISOString().split("T")[0];
 }
 
 export function toNumberOrNull(value) {
@@ -22,5 +23,10 @@ export function showMessage(element, message, isError = false) {
 
   element.textContent = message;
   element.classList.remove("error", "success");
+
+  if (!message) {
+    return;
+  }
+
   element.classList.add(isError ? "error" : "success");
 }

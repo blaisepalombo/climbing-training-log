@@ -11,16 +11,23 @@
   <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
-<header>
-  <nav>
+<header class="hero-header">
+  <nav class="site-nav">
     <h1>Climbing Training Log</h1>
     <ul>
       <li><a href="index.html">Home</a></li>
       <li><a href="log.html">Log Entry</a></li>
-      <li><a href="history.html">History</a></li>
+      <li><a href="history.html" aria-current="page">History</a></li>
       <li><a href="progress.html">Progress</a></li>
     </ul>
   </nav>
+
+  <div class="hero-banner hero-banner--small">
+    <img src="images/progress.jpg" alt="Climbing progress" class="hero-banner-image">
+    <div class="hero-overlay">
+      <h2 class="hero-title">Progress</h2>
+    </div>
+  </div>
 </header>
 
 <main id="progressPage">

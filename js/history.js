@@ -2,9 +2,14 @@ import { getWorkouts } from "./storage.js";
 import { getExerciseDetails } from "./exercises.js";
 
 const CLIMBING_TYPES = ["Bouldering", "Top Rope", "Lead"];
+const TRAINING_TYPES = ["Hangboard", "Strength", "Conditioning"];
 
 function isClimbingType(type) {
   return CLIMBING_TYPES.includes(type);
+}
+
+function isTrainingType(type) {
+  return TRAINING_TYPES.includes(type);
 }
 
 function formatDateHeading(dateString) {
@@ -39,6 +44,7 @@ function buildClimbingCard(workout) {
       <h3>${workout.type} - ${workout.grade || "No grade"}</h3>
       <p><strong>Gym:</strong> ${workout.gym || "-"}</p>
       <p><strong>${nameLabel}:</strong> ${workout.projectName || "-"}</p>
+      <p><strong>Status:</strong> ${workout.status === "completed" ? "Completed" : "In Progress"}</p>
       <p><strong>Notes:</strong> ${workout.notes || "-"}</p>
     </div>
   `;
@@ -85,48 +91,35 @@ function buildDaySection(date, entries, startIndex) {
   };
 }
 
-export async function displayWorkoutHistory() {
-  const container = document.querySelector("#historyList");
-  if (!container) return;
-
+function getVisibleWorkouts() {
   const workouts = getWorkouts();
 
-  const visibleWorkouts = workouts.filter((workout) => {
+  return workouts.filter((workout) => {
     if (isClimbingType(workout.type)) {
       return workout.status === "completed";
     }
 
     return true;
   });
+}
 
-  if (visibleWorkouts.length === 0) {
-    container.innerHTML = "<p>No completed climbs or training entries logged yet.</p>";
-    return;
+function applyHistoryFilter(workouts, filterValue) {
+  if (filterValue === "all") {
+    return workouts;
   }
 
-  const sortedWorkouts = [...visibleWorkouts].sort(
-    (a, b) => new Date(`${b.date}T12:00:00`) - new Date(`${a.date}T12:00:00`)
-  );
+  if (filterValue === "climbing") {
+    return workouts.filter((workout) => isClimbingType(workout.type));
+  }
 
-  const grouped = groupWorkoutsByDate(sortedWorkouts);
-  const orderedDates = Object.keys(grouped).sort(
-    (a, b) => new Date(`${b}T12:00:00`) - new Date(`${a}T12:00:00`)
-  );
+  if (filterValue === "training") {
+    return workouts.filter((workout) => isTrainingType(workout.type));
+  }
 
-  let detailIndex = 0;
+  return workouts.filter((workout) => workout.type === filterValue);
+}
 
-  container.innerHTML = orderedDates
-    .map((date) => {
-      const section = buildDaySection(date, grouped[date], detailIndex);
-      detailIndex = section.nextIndex;
-      return section.html;
-    })
-    .join("");
-
-  const trainingEntries = sortedWorkouts.filter(
-    (workout) => !isClimbingType(workout.type)
-  );
-
+function bindDetailButtons(container, trainingEntries) {
   const detailButtons = container.querySelectorAll(".details-btn");
 
   detailButtons.forEach((button) => {
@@ -166,4 +159,56 @@ export async function displayWorkoutHistory() {
       button.textContent = "Hide Exercise Details";
     });
   });
+}
+
+function renderHistory(filterValue = "all") {
+  const container = document.querySelector("#historyList");
+  if (!container) return;
+
+  const visibleWorkouts = getVisibleWorkouts();
+  const filteredWorkouts = applyHistoryFilter(visibleWorkouts, filterValue);
+
+  if (filteredWorkouts.length === 0) {
+    container.innerHTML = "<p>No entries match this filter.</p>";
+    return;
+  }
+
+  const sortedWorkouts = [...filteredWorkouts].sort(
+    (a, b) => new Date(`${b.date}T12:00:00`) - new Date(`${a.date}T12:00:00`)
+  );
+
+  const grouped = groupWorkoutsByDate(sortedWorkouts);
+  const orderedDates = Object.keys(grouped).sort(
+    (a, b) => new Date(`${b}T12:00:00`) - new Date(`${a}T12:00:00`)
+  );
+
+  let detailIndex = 0;
+
+  container.innerHTML = orderedDates
+    .map((date) => {
+      const section = buildDaySection(date, grouped[date], detailIndex);
+      detailIndex = section.nextIndex;
+      return section.html;
+    })
+    .join("");
+
+  const trainingEntries = sortedWorkouts.filter(
+    (workout) => !isClimbingType(workout.type)
+  );
+
+  bindDetailButtons(container, trainingEntries);
+}
+
+export async function displayWorkoutHistory() {
+  const filterSelect = document.querySelector("#historyFilter");
+
+  renderHistory(filterSelect?.value || "all");
+
+  if (filterSelect && !filterSelect.dataset.bound) {
+    filterSelect.addEventListener("change", () => {
+      renderHistory(filterSelect.value);
+    });
+
+    filterSelect.dataset.bound = "true";
+  }
 }

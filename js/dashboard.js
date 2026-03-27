@@ -181,15 +181,17 @@ async function loadQuote() {
 
   try {
     const quote = await getRandomQuote();
-
     quoteTextEl.textContent = `"${quote.text}"`;
     quoteAuthorEl.textContent = `— ${quote.author}`;
   } catch (error) {
     console.error("Quote loading error:", error);
-
     quoteTextEl.textContent = `"Keep showing up. Small progress still counts."`;
     quoteAuthorEl.textContent = "— Training Log";
   }
 }
 
-await loadQuote();
+export async function displayDashboard() {
+  displayWorkoutSummary();
+  displayCurrentProjects();
+  await loadQuote();
+}
