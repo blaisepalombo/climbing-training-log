@@ -34,24 +34,6 @@
   margin-bottom: 0.6rem;
 }
 
-.site-nav {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 1rem;
-  flex-wrap: nowrap;
-}
-
-.site-nav h1 {
-  white-space: nowrap;
-  flex-shrink: 0;
-}
-
-.site-nav ul {
-  justify-content: flex-end;
-  align-items: center;
-}
-
 .hero-banner {
   position: relative;
   max-width: var(--content-width);

@@ -19,11 +19,8 @@ export function initMobileNav() {
 
   toggle.addEventListener("click", () => {
     const isOpen = toggle.getAttribute("aria-expanded") === "true";
-    if (isOpen) {
-      closeMenu();
-    } else {
-      openMenu();
-    }
+    if (isOpen) closeMenu();
+    else openMenu();
   });
 
   menu.querySelectorAll("a").forEach((link) => {
@@ -31,20 +28,10 @@ export function initMobileNav() {
   });
 
   window.addEventListener("resize", () => {
-    if (window.innerWidth > 700) {
-      closeMenu();
-    }
-  });
-
-  document.addEventListener("click", (event) => {
-    if (!nav.contains(event.target) && window.innerWidth <= 700) {
-      closeMenu();
-    }
+    if (window.innerWidth > 700) closeMenu();
   });
 
   document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") {
-      closeMenu();
-    }
+    if (event.key === "Escape") closeMenu();
   });
 }

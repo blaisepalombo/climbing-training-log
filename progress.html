@@ -14,12 +14,27 @@
 <header class="hero-header">
   <nav class="site-nav">
     <h1>Climbing Training Log</h1>
-    <ul>
-      <li><a href="index.html">Home</a></li>
-      <li><a href="log.html">Log Entry</a></li>
-      <li><a href="history.html">History</a></li>
-      <li><a href="progress.html" aria-current="page">Progress</a></li>
-    </ul>
+
+    <button
+      class="nav-toggle"
+      type="button"
+      aria-label="Toggle navigation menu"
+      aria-expanded="false"
+      aria-controls="site-nav-menu"
+    >
+      <span class="nav-toggle-bar"></span>
+      <span class="nav-toggle-bar"></span>
+      <span class="nav-toggle-bar"></span>
+    </button>
+
+    <div class="site-nav-menu" id="site-nav-menu">
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="log.html">Log Entry</a></li>
+        <li><a href="history.html">History</a></li>
+        <li><a href="progress.html" aria-current="page">Progress</a></li>
+      </ul>
+    </div>
   </nav>
 
   <div class="hero-banner hero-banner--small">
