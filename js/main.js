@@ -1,4 +1,8 @@
+import { initMobileNav } from "./nav.js";
+
 document.addEventListener("DOMContentLoaded", async () => {
+  initMobileNav();
+
   if (document.querySelector("#workoutForm")) {
     try {
       const { initWorkoutForm } = await import("./formHandler.js");

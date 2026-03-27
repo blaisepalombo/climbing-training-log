@@ -54,11 +54,11 @@
 
 .hero-banner {
   position: relative;
-  max-width: 1100px;
-  margin: 0.9rem auto 0;
-  height: 240px;
-  border-radius: 18px;
+  max-width: var(--content-width);
+  margin: 0.95rem auto 0;
+  height: 250px;
   overflow: hidden;
+  border-radius: 18px;
 }
 
 .hero-banner-image {
