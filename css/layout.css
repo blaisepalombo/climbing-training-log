@@ -93,3 +93,16 @@ main {
 main > section {
   margin-bottom: 1.2rem;
 }
+
+.hero-header {
+  background: transparent;
+  min-height: 0;
+  padding: 1rem 1.25rem 0;
+  color: inherit;
+  box-shadow: none;
+  overflow: visible;
+}
+
+.hero-header::before {
+  display: none;
+}

@@ -2,9 +2,24 @@ import { getWorkouts, updateWorkoutStatus, deleteWorkout } from "./storage.js";
 import { getRandomQuote } from "./quotes.js";
 
 const CLIMBING_TYPES = ["Bouldering", "Top Rope", "Lead"];
+const TRAINING_TYPES = ["Hangboard", "Strength", "Conditioning"];
 
 function isClimbingType(type) {
   return CLIMBING_TYPES.includes(type);
+}
+
+function isTrainingType(type) {
+  return TRAINING_TYPES.includes(type);
+}
+
+function normalizeText(value) {
+  return String(value || "").trim();
+}
+
+function sortByDateDescending(workouts) {
+  return [...workouts].sort(
+    (a, b) => new Date(`${b.date}T12:00:00`) - new Date(`${a.date}T12:00:00`)
+  );
 }
 
 function buildRecentEntryText(entry) {
@@ -17,6 +32,45 @@ function buildRecentEntryText(entry) {
 
   const exercise = entry.exercise || "Exercise";
   return `${entry.date} - ${entry.type} - ${exercise}`;
+}
+
+function getMostCommonValue(items) {
+  if (!items.length) return "No data yet";
+
+  const counts = new Map();
+
+  items.forEach((item) => {
+    const normalizedItem = normalizeText(item);
+    if (!normalizedItem) return;
+    counts.set(normalizedItem, (counts.get(normalizedItem) || 0) + 1);
+  });
+
+  if (!counts.size) return "No data yet";
+
+  let topValue = "";
+  let topCount = 0;
+
+  counts.forEach((count, value) => {
+    if (count > topCount) {
+      topValue = value;
+      topCount = count;
+    }
+  });
+
+  return topValue || "No data yet";
+}
+
+function getSessionsThisWeek(workouts) {
+  const now = new Date();
+  const start = new Date();
+  start.setDate(now.getDate() - 6);
+  start.setHours(0, 0, 0, 0);
+
+  return workouts.filter((workout) => {
+    if (!workout.date) return false;
+    const workoutDate = new Date(`${workout.date}T12:00:00`);
+    return workoutDate >= start && workoutDate <= now;
+  }).length;
 }
 
 function buildProjectCard(entry) {
@@ -41,25 +95,45 @@ function buildProjectCard(entry) {
   `;
 }
 
-function displayWorkoutSummary() {
-  const totalEl = document.querySelector("#totalSessions");
-  const recentEl = document.querySelector("#recentWorkout");
-
-  if (!totalEl || !recentEl) return;
-
-  const workouts = getWorkouts();
-  totalEl.textContent = workouts.length;
-
-  if (workouts.length === 0) {
-    recentEl.textContent = "No entries logged yet.";
-    return;
+function setText(selector, value) {
+  const element = document.querySelector(selector);
+  if (element) {
+    element.textContent = value;
   }
+}
 
-  const sortedWorkouts = [...workouts].sort(
-    (a, b) => new Date(`${b.date}T12:00:00`) - new Date(`${a.date}T12:00:00`)
+function displayWorkoutSummary() {
+  const workouts = getWorkouts();
+  const sortedWorkouts = sortByDateDescending(workouts);
+  const climbingWorkouts = workouts.filter((entry) => isClimbingType(entry.type));
+  const trainingWorkouts = workouts.filter((entry) => isTrainingType(entry.type));
+
+  const activeProjects = climbingWorkouts.filter((entry) => entry.status === "in_progress");
+  const completedProjects = climbingWorkouts.filter((entry) => entry.status === "completed");
+  const totalProjects = activeProjects.length + completedProjects.length;
+
+  const completionRate = totalProjects
+    ? Math.round((completedProjects.length / totalProjects) * 100)
+    : 0;
+
+  setText("#totalSessions", String(workouts.length));
+  setText("#sessionsThisWeek", String(getSessionsThisWeek(workouts)));
+  setText(
+    "#recentWorkout",
+    sortedWorkouts.length ? buildRecentEntryText(sortedWorkouts[0]) : "No entries logged yet."
   );
 
-  recentEl.textContent = buildRecentEntryText(sortedWorkouts[0]);
+  setText("#mostClimbedType", getMostCommonValue(climbingWorkouts.map((entry) => entry.type)));
+  setText("#mostClimbedGrade", getMostCommonValue(climbingWorkouts.map((entry) => entry.grade)));
+  setText("#mostVisitedGym", getMostCommonValue(climbingWorkouts.map((entry) => entry.gym)));
+
+  setText("#activeProjectsCount", String(activeProjects.length));
+  setText("#completedProjectsCount", String(completedProjects.length));
+  setText("#projectCompletionRate", `${completionRate}%`);
+
+  setText("#totalTrainingSessions", String(trainingWorkouts.length));
+  setText("#mostLoggedExercise", getMostCommonValue(trainingWorkouts.map((entry) => entry.exercise)));
+  setText("#mostLoggedTrainingType", getMostCommonValue(trainingWorkouts.map((entry) => entry.type)));
 }
 
 function displayCurrentProjects() {
@@ -84,8 +158,7 @@ function displayCurrentProjects() {
 
   completeButtons.forEach((button) => {
     button.addEventListener("click", () => {
-      const entryId = button.dataset.id;
-      updateWorkoutStatus(entryId, "completed");
+      updateWorkoutStatus(button.dataset.id, "completed");
       displayWorkoutSummary();
       displayCurrentProjects();
     });
@@ -93,8 +166,7 @@ function displayCurrentProjects() {
 
   deleteButtons.forEach((button) => {
     button.addEventListener("click", () => {
-      const entryId = button.dataset.id;
-      deleteWorkout(entryId);
+      deleteWorkout(button.dataset.id);
       displayWorkoutSummary();
       displayCurrentProjects();
     });
@@ -104,43 +176,20 @@ function displayCurrentProjects() {
 async function loadQuote() {
   const quoteTextEl = document.querySelector("#quoteText");
   const quoteAuthorEl = document.querySelector("#quoteAuthor");
-  const quoteStatusEl = document.querySelector("#quoteStatus");
-  const newQuoteBtn = document.querySelector("#newQuoteBtn");
 
-  if (!quoteTextEl || !quoteAuthorEl || !quoteStatusEl || !newQuoteBtn) return;
-
-  quoteStatusEl.textContent = "Loading quote...";
-  newQuoteBtn.disabled = true;
-  newQuoteBtn.textContent = "Loading...";
+  if (!quoteTextEl || !quoteAuthorEl) return;
 
   try {
     const quote = await getRandomQuote();
 
     quoteTextEl.textContent = `"${quote.text}"`;
     quoteAuthorEl.textContent = `— ${quote.author}`;
-    quoteStatusEl.textContent = "";
   } catch (error) {
     console.error("Quote loading error:", error);
 
     quoteTextEl.textContent = `"Keep showing up. Small progress still counts."`;
     quoteAuthorEl.textContent = "— Training Log";
-    quoteStatusEl.textContent = "Could not load a live quote right now.";
-  } finally {
-    newQuoteBtn.disabled = false;
-    newQuoteBtn.textContent = "New Quote";
   }
 }
 
-export async function displayDashboard() {
-  displayWorkoutSummary();
-  displayCurrentProjects();
-
-  const newQuoteBtn = document.querySelector("#newQuoteBtn");
-
-  if (newQuoteBtn && !newQuoteBtn.dataset.bound) {
-    newQuoteBtn.addEventListener("click", loadQuote);
-    newQuoteBtn.dataset.bound = "true";
-  }
-
-  await loadQuote();
-}
+await loadQuote();

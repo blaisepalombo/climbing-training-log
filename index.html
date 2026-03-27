@@ -12,7 +12,7 @@
 </head>
 <body>
 
-<header>
+<header class="hero-header">
   <nav>
     <h1>Climbing Training Log</h1>
     <ul>
@@ -22,42 +22,146 @@
       <li><a href="progress.html">Progress</a></li>
     </ul>
   </nav>
+
+  <div class="hero-banner">
+    <img src="images/rock-wall.jpg" alt="Climbing wall" class="hero-banner-image">
+    <div class="hero-overlay">
+      <div class="hero-quote-box">
+        <p id="quoteText" class="hero-quote">Loading quote...</p>
+        <p id="quoteAuthor" class="hero-author"></p>
+      </div>
+    </div>
+  </div>
 </header>
 
-<main>
-  <h2>Dashboard</h2>
+<main class="dashboard-page">
+  <section class="dashboard-summary dashboard-cluster--full">
+    <div class="summary-header">
+      <div>
+        <p class="eyebrow">dashboard</p>
+        <h2>Training Snapshot</h2>
+        <p class="dashboard-intro">
+          A quick look at your recent climbing and training.
+        </p>
+      </div>
 
-  <section>
-    <h3>Total Logged Entries</h3>
-    <p id="totalSessions">0</p>
+      <div class="dashboard-quick-links">
+        <a class="dashboard-link-card" href="log.html">
+          <span class="dashboard-link-title">Log New Entry</span>
+          <span class="dashboard-link-text">Add a climb or training session.</span>
+        </a>
+
+        <a class="dashboard-link-card" href="history.html">
+          <span class="dashboard-link-title">View History</span>
+          <span class="dashboard-link-text">Look back through saved workouts.</span>
+        </a>
+
+        <a class="dashboard-link-card" href="progress.html">
+          <span class="dashboard-link-title">Open Progress</span>
+          <span class="dashboard-link-text">See deeper stats and trends.</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="dashboard-top-grid">
+      <article class="dashboard-stat-card dashboard-stat-card--primary">
+        <p class="dashboard-stat-label">Total Logged Entries</p>
+        <p id="totalSessions" class="dashboard-stat-value">0</p>
+      </article>
+
+      <article class="dashboard-stat-card dashboard-stat-card--primary">
+        <p class="dashboard-stat-label">Sessions This Week</p>
+        <p id="sessionsThisWeek" class="dashboard-stat-value">0</p>
+      </article>
+
+      <article class="dashboard-stat-card dashboard-stat-card--wide">
+        <p class="dashboard-stat-label">Most Recent Entry</p>
+        <p id="recentWorkout" class="dashboard-stat-text">No entries logged yet.</p>
+      </article>
+    </div>
   </section>
 
-  <section>
-    <h3>Most Recent Entry</h3>
-    <p id="recentWorkout">No entries logged yet.</p>
-  </section>
+  <section class="dashboard-cluster dashboard-cluster--full dashboard-cluster--projects">
+    <div class="cluster-heading">
+      <h3>Current Projects</h3>
+      <p>Your open climbing projects are listed here.</p>
+    </div>
 
-  <section>
-    <h3>Current Projects</h3>
     <div id="currentProjects">
       <p>No current projects right now.</p>
     </div>
   </section>
 
-  <section class="quote-section">
-    <div class="quote-header">
-      <h3>Motivation for Today</h3>
-      <button id="newQuoteBtn" class="button-secondary" type="button">New Quote</button>
+  <section class="dashboard-cluster">
+    <div class="cluster-heading">
+      <h3>Climbing Snapshot</h3>
+      <p>Fast climbing stats from your saved entries.</p>
     </div>
 
-    <p id="quoteText" class="quote-text">Loading quote...</p>
-    <p id="quoteAuthor" class="quote-author"></p>
-    <p id="quoteStatus" class="quote-status" aria-live="polite"></p>
+    <div class="dashboard-stat-grid">
+      <article class="dashboard-stat-card">
+        <p class="dashboard-stat-label">Most Climbed Type</p>
+        <p id="mostClimbedType" class="dashboard-stat-value dashboard-stat-value--small">No data yet</p>
+      </article>
 
-    <p class="quote-credit">
-      Quotes powered by
-      <a href="https://quoteslate.vercel.app" target="_blank" rel="noopener noreferrer">QuoteSlate API</a>
-    </p>
+      <article class="dashboard-stat-card">
+        <p class="dashboard-stat-label">Most Climbed Grade</p>
+        <p id="mostClimbedGrade" class="dashboard-stat-value dashboard-stat-value--small">No data yet</p>
+      </article>
+
+      <article class="dashboard-stat-card">
+        <p class="dashboard-stat-label">Most Visited Gym</p>
+        <p id="mostVisitedGym" class="dashboard-stat-value dashboard-stat-value--small">No data yet</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="dashboard-cluster">
+    <div class="cluster-heading">
+      <h3>Projects</h3>
+      <p>Current project status at a glance.</p>
+    </div>
+
+    <div class="dashboard-stat-grid">
+      <article class="dashboard-stat-card">
+        <p class="dashboard-stat-label">Active Projects</p>
+        <p id="activeProjectsCount" class="dashboard-stat-value">0</p>
+      </article>
+
+      <article class="dashboard-stat-card">
+        <p class="dashboard-stat-label">Completed Projects</p>
+        <p id="completedProjectsCount" class="dashboard-stat-value">0</p>
+      </article>
+
+      <article class="dashboard-stat-card">
+        <p class="dashboard-stat-label">Completion Rate</p>
+        <p id="projectCompletionRate" class="dashboard-stat-value dashboard-stat-value--small">0%</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="dashboard-cluster">
+    <div class="cluster-heading">
+      <h3>Training Snapshot</h3>
+      <p>Quick non-climbing stats.</p>
+    </div>
+
+    <div class="dashboard-stat-grid">
+      <article class="dashboard-stat-card">
+        <p class="dashboard-stat-label">Training Sessions</p>
+        <p id="totalTrainingSessions" class="dashboard-stat-value">0</p>
+      </article>
+
+      <article class="dashboard-stat-card">
+        <p class="dashboard-stat-label">Most Logged Exercise</p>
+        <p id="mostLoggedExercise" class="dashboard-stat-value dashboard-stat-value--small">No data yet</p>
+      </article>
+
+      <article class="dashboard-stat-card">
+        <p class="dashboard-stat-label">Top Training Type</p>
+        <p id="mostLoggedTrainingType" class="dashboard-stat-value dashboard-stat-value--small">No data yet</p>
+      </article>
+    </div>
   </section>
 </main>
 

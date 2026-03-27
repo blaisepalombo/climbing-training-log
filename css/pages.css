@@ -28,79 +28,331 @@
 }
 
 /* =========================
-   DASHBOARD
+   HERO HEADER
 ========================= */
-#totalSessions,
-#totalWorkouts {
-  font-size: 2.2rem;
+.hero-header {
+  margin-bottom: 1rem;
+}
+
+.hero-header nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: nowrap;
+}
+
+.hero-header nav h1 {
+  margin: 0;
+  font-size: 1.55rem;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.hero-header nav ul {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.hero-banner {
+  position: relative;
+  width: 100%;
+  height: 250px;
+  overflow: hidden;
+  border-radius: 18px;
+}
+
+.hero-banner-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 1.25rem 1.5rem;
+  background: transparent;
+}
+
+.hero-quote-box {
+  max-width: 500px;
+  background: rgba(93, 122, 104, 0.92);
+  color: white;
+  border-radius: 16px;
+  padding: 0.9rem 1rem;
+  box-shadow: 0 14px 28px rgba(24, 49, 38, 0.16);
+}
+
+.hero-quote {
+  margin: 0 0 0.35rem;
+  font-size: 1.05rem;
   font-weight: 800;
+  line-height: 1.4;
+  color: white;
+}
+
+.hero-author {
+  margin: 0;
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+/* =========================
+   DASHBOARD PAGE
+========================= */
+.dashboard-page {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.1rem;
+}
+
+.dashboard-cluster--full {
+  grid-column: 1 / -1;
+}
+
+.dashboard-summary {
+  grid-column: 1 / -1;
+  background: linear-gradient(
+    to bottom right,
+    rgba(255, 255, 255, 0.96),
+    rgba(244, 246, 241, 0.95)
+  );
+  border-radius: 18px;
+  padding: 1rem 1.1rem;
+}
+
+.summary-header {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 1rem;
+  align-items: start;
+  margin-bottom: 1rem;
+}
+
+.eyebrow {
+  margin: 0 0 0.35rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: var(--forest);
+}
+
+.dashboard-intro {
+  margin: 0.35rem 0 0;
+  color: #486155;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.dashboard-quick-links {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.8rem;
+}
+
+.dashboard-link-card {
+  display: block;
+  text-decoration: none;
+  background: linear-gradient(
+    to bottom right,
+    rgba(255, 255, 255, 0.98),
+    rgba(244, 246, 241, 0.96)
+  );
+  border: 1px solid rgba(93, 122, 104, 0.12);
+  border-radius: 16px;
+  padding: 0.9rem 1rem;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+}
+
+.dashboard-link-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 26px rgba(24, 49, 38, 0.08);
+  border-color: rgba(93, 122, 104, 0.24);
+}
+
+.dashboard-link-title {
+  display: block;
+  color: var(--forest-dark);
+  font-weight: 800;
+  margin-bottom: 0.18rem;
+}
+
+.dashboard-link-text {
+  display: block;
+  color: #5a6a63;
+  font-weight: 600;
+}
+
+.dashboard-cluster {
+  background: linear-gradient(
+    to bottom right,
+    rgba(255, 255, 255, 0.96),
+    rgba(244, 246, 241, 0.95)
+  );
+}
+
+.dashboard-cluster--projects {
+  min-height: 260px;
+}
+
+.cluster-heading {
+  margin-bottom: 1rem;
+}
+
+.cluster-heading h3 {
+  margin-bottom: 0.18rem;
+}
+
+.cluster-heading p {
+  margin: 0;
+  color: #557065;
+  font-weight: 600;
+}
+
+.dashboard-top-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.9rem;
+}
+
+.dashboard-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.9rem;
+}
+
+.dashboard-stat-card {
+  background: linear-gradient(
+    to bottom right,
+    rgba(156, 175, 136, 0.1),
+    rgba(255, 255, 255, 0.98)
+  );
+  border: 1px solid rgba(93, 122, 104, 0.14);
+  border-radius: 16px;
+  padding: 1rem;
+  min-height: 132px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.dashboard-stat-card--primary {
+  background: linear-gradient(
+    to bottom right,
+    rgba(93, 122, 104, 0.16),
+    rgba(255, 255, 255, 0.98)
+  );
+}
+
+.dashboard-stat-label {
+  margin: 0 0 0.45rem;
+  color: #486155;
+  font-weight: 700;
+}
+
+.dashboard-stat-value {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 1.1;
   color: var(--forest-dark);
 }
 
-#recentWorkout,
-#commonWorkout {
-  font-weight: 600;
+.dashboard-stat-value--small {
+  font-size: 1.35rem;
+}
+
+.dashboard-stat-text {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
   color: #32463a;
+  line-height: 1.45;
 }
 
 #currentProjects .project-card {
   margin-bottom: 0.75rem;
 }
 
-/* =========================
-   QUOTE CARD
-========================= */
-.quote-section {
-  background: linear-gradient(
-    to bottom right,
-    rgba(255, 255, 255, 0.96),
-    rgba(243, 241, 235, 0.94)
-  );
-}
-
-.quote-header {
+.project-card-actions {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 1rem;
-  margin-bottom: 0.75rem;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+  margin-top: 0.9rem;
 }
 
-.quote-header h3 {
-  margin: 0;
+.project-card-actions button {
+  flex: 1 1 160px;
 }
 
-.quote-text {
-  font-size: 1.15rem;
-  font-weight: 700;
+#totalSessions,
+#sessionsThisWeek,
+#activeProjectsCount,
+#completedProjectsCount,
+#totalTrainingSessions {
+  font-size: 2.2rem;
+  font-weight: 800;
   color: var(--forest-dark);
-  margin-bottom: 0.65rem;
 }
 
-.quote-author {
-  color: var(--forest);
-  font-weight: 700;
-  margin-bottom: 0.45rem;
+#recentWorkout,
+#mostClimbedType,
+#mostClimbedGrade,
+#mostVisitedGym,
+#projectCompletionRate,
+#mostLoggedExercise,
+#mostLoggedTrainingType {
+  color: #32463a;
 }
 
-.quote-status {
-  min-height: 1.4rem;
-  font-weight: 600;
-  color: var(--forest-light);
+@media (max-width: 900px) {
+  .dashboard-page,
+  .summary-header,
+  .dashboard-top-grid,
+  .dashboard-stat-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-cluster--full {
+    grid-column: auto;
+  }
+
+  .hero-header nav {
+    flex-wrap: wrap;
+  }
+
+  .hero-header nav h1 {
+    white-space: normal;
+  }
 }
 
-.quote-credit {
-  margin-top: 0.8rem;
-  font-size: 0.95rem;
-  color: #4d5f56;
-}
+@media (max-width: 700px) {
+  .hero-banner {
+    height: 210px;
+  }
 
-.quote-credit a {
-  color: var(--forest);
-  font-weight: 700;
-  text-decoration: none;
-}
+  .hero-overlay {
+    padding: 1rem;
+  }
 
-.quote-credit a:hover {
-  text-decoration: underline;
+  .hero-quote-box {
+    max-width: 100%;
+  }
+
+  .hero-quote {
+    font-size: 0.98rem;
+  }
+
+  .hero-author {
+    font-size: 0.88rem;
+  }
 }
